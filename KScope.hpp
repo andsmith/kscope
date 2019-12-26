@@ -11,25 +11,41 @@ using namespace std::chrono;
 
 void _mouse_callback(int event, int x, int y, int flags, void* userdata);
 
+
+typedef struct ray_str{
+  Mat pt, dir;
+} ray;
+
+
+class Mirror{
+public:
+  ray norm;
+  double height;
+  Mirror(double z_dist, ray normal);
+  Mirror(double z_dist, Mat p0, Mat p1);
+  ~Mirror();
+  Mat intersect_rays(vector<ray> rays);
+};
+
+
 class KScope {
 
 private:
 
-  String WINDOW_NAME = "Kaleidoscope";
+  String IMG_WINDOW_NAME = "Target Image";
+  String K_WINDOW_NAME = "Kaleidoscope";
+  std::vector<Mirror*> * mirrors;
   
   Mat base_img, show_img;
-  int width, height;
-
   int n_frames , f_start_ind , n_interval;
-  
-
-
   system_clock::time_point t_start = system_clock::now(), t_end;
-
   void _reset_frame_counter(void);
   int _show_frame(Mat image, int delay=0);
-  
+  double z_dist;
 public:
+  void print_mirrors();
+  void iso_triangle(double height, double base);
+
   KScope(char * img_name);
   ~KScope();
   void run();
